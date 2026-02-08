@@ -1,0 +1,35 @@
+server:
+  port:  8761
+
+spring:
+  application:
+    name: eureka_server
+
+eureka:
+  client:
+    register-with-eureka: false # Avoids get registed itself as a client
+    fetch-registry: false # Sets to false because eureka server does not need the registy(list of services) to discover other services
+    service-url:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/ # Sets the URL of Eureka server endpoint
+
+  server:
+    enable-self-preservation: true # keeps the server from aggressively evicting instances during network issues
+    eviction-interval-timer-in-ms: 60000 # runs the eviction task every 60s to remove instances with experied leases (missed heartbeats)
+    response-cache-update-interval-ms: 30000 # updates server's response cache every 30s that is used to answer client queries efficiently
+
+  instance:
+    hostname: localhost # sets the hostname this server is advertised (shown)
+    prefer-ip-address: false # tells Eureka to advertise the hostname instead of the IP
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus # exposes those actuator endpoint over HTTP(/actuator/health, /actuator/info) 
+  endpoint:
+    health:
+      show-details: always # always shows full health details 
+  prometheus:
+    metrics:
+      export:
+        enabled: true # turns on Prometheus metrics exporter to use on /actuator/prometheus
